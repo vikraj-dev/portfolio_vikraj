@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vikraj A - Flutter Developer Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS Variables based on Flutter theme */
+        :root {
+            --primary-dark: #1A1A2E;
+            --secondary-dark: #16213E;
+            --accent-color: #0F3460;
+            --highlight-color: #00ADB5;
+            --text-color: #E0E0E0;
+            --heading-color: #FFFFFF;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-highlight: rgba(0, 173, 181, 0.4);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--primary-dark);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+
+        /* Utility classes for text colors */
+        .text-primary-dark { color: var(--primary-dark); }
+        .text-secondary-dark { color: var(--secondary-dark); }
+        .text-accent-color { color: var(--accent-color); }
+        .text-highlight-color { color: var(--highlight-color); }
+        .text-text-color { color: var(--text-color); }
+        .text-heading-color { color: var(--heading-color); }
+
+        /* Utility classes for background colors */
+        .bg-primary-dark { background-color: var(--primary-dark); }
+        .bg-secondary-dark { background-color: var(--secondary-dark); }
+        .bg-accent-color { background-color: var(--accent-color); }
+        .bg-highlight-color { background-color: var(--highlight-color); }
+
+        /* Custom Hexagonal Clipper */
+        .hexagonal-clip {
+            -webkit-clip-path: polygon(50% 0%, 90% 25%, 90% 75%, 50% 100%, 10% 75%, 10% 25%);
+            clip-path: polygon(50% 0%, 90% 25%, 90% 75%, 50% 100%, 10% 75%, 10% 25%);
+            box-shadow: 0 0 20px 5px var(--shadow-highlight); /* Highlight shadow */
+            transition: transform 0.3s ease-in-out;
+        }
+        .hexagonal-clip:hover {
+            transform: scale(1.03); /* Slight zoom on hover */
+        }
+
+        /* General card styling */
+        .card {
+            background-color: var(--secondary-dark);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow-color), 0 0 15px var(--highlight-color);
+        }
+
+        /* Input field styling */
+        .custom-input {
+            background-color: var(--secondary-dark);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--text-color);
+            outline: none;
+            border: none;
+            transition: border-color 0.3s ease-in-out;
+        }
+        .custom-input:focus {
+            border: 2px solid var(--highlight-color);
+        }
+        .custom-input::placeholder {
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--primary-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--highlight-color);
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-secondary-dark p-6 shadow-lg flex justify-between items-center fixed w-full z-50 top-0">
+        <div class="text-3xl font-extrabold text-highlight-color">Vikraj A</div>
+        <div class="hidden md:flex space-x-8">
+            <a href="#hero" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">Home</a>
+            <a href="#about" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">About</a>
+            <a href="#services" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">My Services</a>
+            <a href="#projects" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">Portfolio</a>
+            <a href="#contact" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">Contact</a>
+        </div>
+        <div class="md:hidden">
+            <button id="mobile-menu-button" class="text-highlight-color text-3xl focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-primary-dark bg-opacity-95 z-40 hidden flex-col items-center justify-center space-y-8 text-3xl">
+        <button id="close-menu-button" class="absolute top-6 right-6 text-highlight-color text-4xl">
+            <i class="fas fa-times"></i>
+        </button>
+        <a href="#hero" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">Home</a>
+        <a href="#about" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">About</a>
+        <a href="#services" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">My Services</a>
+        <a href="#projects" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">Portfolio</a>
+        <a href="#contact" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">Contact</a>
+    </div>
+
+    <main class="pt-24 px-6 md:px-12 lg:px-16">
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left gap-16 py-10">
+            <div class="md:w-3/5">
+                <p class="text-highlight-color text-2xl mb-4 font-semibold">Hello, It's Me</p>
+                <h1 class="text-heading-color text-5xl md:text-7xl font-extrabold mb-4 leading-tight">Vikraj A</h1>
+                <h2 class="text-text-color text-3xl md:text-4xl font-bold mb-6"> I'm a <span class="text-highlight-color">Flutter Developer</span></h2>
+                <p class="text-text-color text-lg md:text-xl opacity-80 mb-8 max-w-2xl mx-auto md:mx-0">
+                   Expert in Flutter, Dart, and Firebase — creating modern, responsive, and engaging applications for every platform.
+                </p>
+                <div class="flex justify-center md:justify-start space-x-6 mb-12">
+                   <a href="https://www.instagram.com/itsvicky.dev/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="flex items-center justify-center w-14 h-14 rounded-xl bg-accent-color text-highlight-color text-2xl shadow-lg transition-all duration-300 hover:bg-highlight-color hover:text-primary-dark">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://github.com/vikraj-dev" target="_blank"
+   class="flex items-center justify-center w-14 h-14 rounded-xl bg-accent-color text-highlight-color text-2xl shadow-lg transition-all duration-300 hover:bg-highlight-color hover:text-primary-dark">
+   <i class="fab fa-github"></i>
+</a>
+
+
+                    <a href="https://www.linkedin.com/in/vikraj-arjun" target="_blank"
+   class="flex items-center justify-center w-14 h-14 rounded-xl bg-accent-color text-highlight-color text-2xl shadow-lg transition-all duration-300 hover:bg-highlight-color hover:text-primary-dark">
+   <i class="fab fa-linkedin-in"></i>
+</a>
+
+                </div>
+                <a href="#contact"
+   class="inline-block px-8 py-4 bg-highlight-color text-primary-dark text-lg font-bold rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+   Hire Me
+</a>
+
+            </div>
+   <div class="w-[420px] h-[480px] overflow-hidden rounded-2xl shadow-2xl">
+  <img 
+    src="./assets/crop.JPG"
+    class="w-full h-full object-cover"
+  >
+</div>
+
+        </section>
+
+<hr class="border-t border-accent-color my-8 opacity-30">
+
+        <!-- About Me Section -->
+        <section id="about" class="py-10">
+  <h2 class="text-highlight-color text-4xl font-bold mb-10 text-center">
+
+    About Me
+  </h2>
+
+  <div class="flex flex-col md:flex-row items-center justify-center gap-28 max-w-6xl mx-auto">
+
+
+    <!-- Image -->
+    <div class="w-80 h-[420px] md:w-[360px] md:h-[460px] overflow-hidden rounded-2xl shadow-2xl border border-gray-700 flex-shrink-0">
+
+
+      <img 
+        src="./assets/crop.JPG"
+        alt="Vikraj A - Flutter Developer"
+        class="w-full h-full object-cover"
+      >
+    </div>
+
+    <!-- Content -->
+    <div class="md:w-3/5 text-center md:text-left">
+
+      <h3 class="text-heading-color text-2xl md:text-3xl font-semibold mb-3">
+
+        Flutter Developer
+      </h3>
+
+      <p class="text-text-color text-base md:text-lg opacity-80 mb-7 leading-loose">
+
+        I’m a Flutter Developer with hands-on experience in building real-time, 
+        scalable mobile and web applications. I specialize in Flutter, Firebase, 
+        and clean architecture — focusing on performance, usability, and maintainable code.
+      </p>
+
+      <p class="text-text-color text-lg opacity-80 mb-8">
+        I’ve worked on production-ready apps including taxi booking systems, 
+        admin dashboards, and driver tracking platforms using Google Maps 
+        and Firebase services.
+      </p>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-3 gap-6 mb-8">
+        <div class="text-center">
+          <h4 class="text-highlight-color text-3xl font-bold">1+</h4>
+          <p class="text-sm opacity-70">Years Experience</p>
+        </div>
+        <div class="text-center">
+          <h4 class="text-highlight-color text-3xl font-bold">3+</h4>
+          <p class="text-sm opacity-70">Projects Completed</p>
+        </div>
+        <div class="text-center">
+          <h4 class="text-highlight-color text-3xl font-bold">2 </h4>
+          <p class="text-sm opacity-70">Live Apps</p>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="flex flex-wrap gap-3 mb-8 justify-center md:justify-start">
+        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Flutter</span>
+        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Dart</span>
+        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Firebase</span>
+        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Firestore</span>
+        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Google Maps</span>
+        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">REST APIs</span>
+      </div>
+
+      <!-- Resume Button -->
+      <a 
+        href="./assets/Vikraj_A_Flutter_Developer_CV.pdf"
+        target="_blank"
+        class="inline-block px-8 py-4 bg-highlight-color text-primary-dark text-lg font-bold rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+      >
+        Download Resume
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+
+        <hr class="border-t border-accent-color my-16 opacity-40">
+
+
+        <!-- My Services Section -->
+        <section id="services" class="min-h-screen py-10">
+            <h2 class="text-highlight-color text-4xl font-bold mb-12 text-center">My Services</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div class="card p-8 flex flex-col items-center text-center">
+                    <div class="text-highlight-color text-5xl mb-6">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="text-heading-color text-2xl font-bold mb-4">Mobile App Development</h3>
+                    <p class="text-text-color opacity-70">Building high-performance, native-like mobile applications for iOS and Android with Flutter.</p>
+                </div>
+                <div class="card p-8 flex flex-col items-center text-center">
+                    <div class="text-highlight-color text-5xl mb-6">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3 class="text-heading-color text-2xl font-bold mb-4">Flutter Web Development</h3>
+                    <p class="text-text-color opacity-70">Creating responsive and interactive web experiences using Flutter for the web.</p>
+                </div>
+                <div class="card p-8 flex flex-col items-center text-center">
+                    <div class="text-highlight-color text-5xl mb-6">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <h3 class="text-heading-color text-2xl font-bold mb-4">UI/UX Design</h3>
+                    <p class="text-text-color opacity-70">Crafting intuitive and engaging user interfaces that provide excellent user experiences.</p>
+                </div>
+                <div class="card p-8 flex flex-col items-center text-center">
+                    <div class="text-highlight-color text-5xl mb-6">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                    <h3 class="text-heading-color text-2xl font-bold mb-4">State Management (Flutter)</h3>
+                    <p class="text-text-color opacity-70">Implementing efficient and scalable state management solutions in Flutter applications.</p>
+                </div>
+                <div class="card p-8 flex flex-col items-center text-center">
+                    <div class="text-highlight-color text-5xl mb-6">
+                        <i class="fas fa-share-alt"></i>
+                    </div>
+                    <h3 class="text-heading-color text-2xl font-bold mb-4">API Integration (Flutter)</h3>
+                    <p class="text-text-color opacity-70">Connecting Flutter applications with various backend APIs and services.</p>
+                </div>
+                <div class="card p-8 flex flex-col items-center text-center">
+                    <div class="text-highlight-color text-5xl mb-6">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <h3 class="text-heading-color text-2xl font-bold mb-4">Cross-Platform Development</h3>
+                    <p class="text-text-color opacity-70">Building applications that run seamlessly across multiple platforms from a single codebase.</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="border-t border-accent-color my-24">
+
+        <!-- Recent Projects Section -->
+        <section id="projects" class="py-12">
+            <h2 class="text-highlight-color text-4xl font-bold mb-12 text-center">Recent Projects</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
+                <!-- Project Card 1 -->
+                                    <div class="card overflow-hidden">
+                    <img src="./assets/pktlogo.png" alt="PKT Call Taxi User App"
+                        class="w-full h-48 object-cover rounded-t-xl">
+                    <div class="p-6">
+                        <h3 class="text-heading-color text-xl font-bold mb-2">
+                        PKT Call Taxi – User App
+                        </h3>
+                        <p class="text-text-color opacity-70 text-sm mb-4">
+                        A Flutter-based taxi booking app for users with real-time driver matching,
+                        fare calculation, Google Maps integration, and Firebase backend.
+                        </p>
+
+                        <div class="text-highlight-color text-sm mb-4">
+                        Flutter • Firebase • Google Maps • FCM
+                        </div>
+
+                        <a href="https://github.com/vikraj-dev/pktcalltaxi-user"
+                        target="_blank"
+                        class="text-highlight-color font-semibold hover:underline">
+                        View Project <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    </div>
+
+                <!-- Project Card 2 -->
+                <div class="card overflow-hidden">
+                    <img src="./assets/car.jpg" alt="PKT Call Taxi Driver App"
+                        class="w-full h-48 object-cover rounded-t-xl">
+                    <div class="p-6">
+                        <h3 class="text-heading-color text-xl font-bold mb-2">
+                        PKT Call Taxi – Driver App
+                        </h3>
+                        <p class="text-text-color opacity-70 text-sm mb-4">
+                        Driver-side Flutter application for accepting rides, live location tracking,
+                        trip management, and push notifications using Firebase.
+                        </p>
+
+                        <div class="text-highlight-color text-sm mb-4">
+                        Flutter • Firebase • Realtime DB • FCM
+                        </div>
+
+                        <a href="https://github.com/vikraj-dev/pktcalltaxi-driver"
+                        target="_blank"
+                        class="text-highlight-color font-semibold hover:underline">
+                        View Project <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                    </div>
+
+                <!-- Project Card 3 -->
+                <div class="card overflow-hidden">
+  <img src="./assets/logo.jpg" alt="PKT Call Taxi Admin Panel"
+       class="w-full h-48 object-cover rounded-t-xl">
+  <div class="p-6">
+    <h3 class="text-heading-color text-xl font-bold mb-2">
+      PKT Call Taxi – Admin Panel
+    </h3>
+    <p class="text-text-color opacity-70 text-sm mb-4">
+      Web-based admin dashboard to manage drivers, users, rides,
+      pricing, and real-time analytics using Firebase.
+    </p>
+
+    <div class="text-highlight-color text-sm mb-4">
+      Flutter Web • Firebase • Firestore • Analytics
+    </div>
+
+    <a href="https://github.com/vikraj-dev/pktcalltaxi-admin"
+       target="_blank"
+       class="text-highlight-color font-semibold hover:underline">
+       View Project <i class="fas fa-arrow-right ml-1"></i>
+    </a>
+  </div>
+</div>
+
+                <!-- Project Card 4 -->
+                
+        </section>
+
+        <hr class="border-t border-accent-color my-24">
+
+        <!-- Contact Me Section -->
+        <section id="contact" class="min-h-screen flex items-center justify-center py-10">
+            <div class="w-full max-w-2xl card p-10">
+                <h2 class="text-highlight-color text-4xl font-bold mb-8 text-center">Contact Me</h2>
+                <form id="contact-form" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-text-color text-lg font-semibold mb-2">Your Name</label>
+                        <input type="text" id="name" name="name" placeholder="Enter your name" class="custom-input w-full" required>
+                    </div>
+                    <div>
+                        <label for="email" class="block text-text-color text-lg font-semibold mb-2">Your Email</label>
+                        <input type="email" id="email" name="email" placeholder="Enter your email address" class="custom-input w-full" required>
+                    </div>
+                    <div>
+                        <label for="message" class="block text-text-color text-lg font-semibold mb-2">Your Message</label>
+                        <textarea id="message" name="message" rows="6" placeholder="Type your message here" class="custom-input w-full resize-y" required></textarea>
+                    </div>
+                    <div class="text-right">
+                        <button type="submit" class="px-8 py-4 bg-highlight-color text-primary-dark text-lg font-bold rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                            Send Message
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary-dark text-text-color text-center py-8 mt-24">
+        <p>&copy; 2024 Vikraj A. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenuButton = document.getElementById('close-menu-button');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+        });
+
+        closeMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+        });
+
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+        }
+
+        // Contact Form Submission (placeholder)
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const message = document.getElementById('message').value;
+
+            console.log('Form Submitted!');
+            console.log('Name:', name);
+            console.log('Email:', email);
+            console.log('Message:', message);
+
+            // In a real application, you would send this data to a backend server.
+            alert('Thank you for your message! I will get back to you soon.');
+            this.reset(); // Clear the form
+        });
+
+        // Custom alert function to replace window.alert
+        function alert(message) {
+            const alertBox = document.createElement('div');
+            alertBox.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: var(--secondary-dark);
+                color: var(--text-color);
+                padding: 20px 30px;
+                border-radius: 12px;
+                box-shadow: 0 5px 20px var(--shadow-color);
+                z-index: 9999;
+                text-align: center;
+                font-size: 1.1rem;
+                max-width: 90%;
+            `;
+            alertBox.innerHTML = `
+                <p class="mb-4">${message}</p>
+                <button class="px-6 py-2 bg-highlight-color text-primary-dark font-bold rounded-lg hover:opacity-90">OK</button>
+            `;
+            document.body.appendChild(alertBox);
+
+            alertBox.querySelector('button').addEventListener('click', () => {
+                document.body.removeChild(alertBox);
+            });
+        }
+    </script>
+</body>
+</html>
