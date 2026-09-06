@@ -1,517 +1,1161 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vikraj A - Flutter Developer Portfolio</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        /* Custom CSS Variables based on Flutter theme */
-        :root {
-            --primary-dark: #1A1A2E;
-            --secondary-dark: #16213E;
-            --accent-color: #0F3460;
-            --highlight-color: #00ADB5;
-            --text-color: #E0E0E0;
-            --heading-color: #FFFFFF;
-            --shadow-color: rgba(0, 0, 0, 0.3);
-            --shadow-highlight: rgba(0, 173, 181, 0.4);
-        }
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio — Flutter &amp; PHP Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root{
+      --bg: #070B14;
+      --surface: #0E1524;
+      --surface-2: #141D30;
+      --line: rgba(255,255,255,0.12);
+      --text: #F5F7FA;
+      --text-muted: #8C96AC;
+      --brass: #FFFFFF;
+      --brass-light: #FFFFFF;
+      --brass-dim: rgba(255,255,255,0.08);
+      --accent-glow: rgba(120,160,255,0.35);
+      --shadow: rgba(0,0,0,0.55);
+      --font-display: 'Fraunces', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+    @media (prefers-color-scheme: light){
+      :root:not([data-theme="dark"]){
+        --bg: #F3F5F9;
+        --surface: #FFFFFF;
+        --surface-2: #E9EDF4;
+        --line: rgba(10,20,40,0.12);
+        --text: #0B1220;
+        --text-muted: #57607A;
+        --brass: #0B1220;
+        --brass-light: #14203A;
+        --brass-dim: rgba(11,18,32,0.06);
+        --accent-glow: rgba(30,60,140,0.18);
+        --shadow: rgba(10,20,40,0.12);
+      }
+    }
+    :root[data-theme="light"]{
+      --bg: #F3F5F9;
+      --surface: #FFFFFF;
+      --surface-2: #E9EDF4;
+      --line: rgba(10,20,40,0.12);
+      --text: #0B1220;
+      --text-muted: #57607A;
+      --brass: #0B1220;
+      --brass-light: #14203A;
+      --brass-dim: rgba(11,18,32,0.06);
+      --accent-glow: rgba(30,60,140,0.18);
+      --shadow: rgba(10,20,40,0.12);
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--primary-dark);
-            color: var(--text-color);
-            line-height: 1.6;
-        }
-        
+    /* ---------- splash (cinematic intro, refined) ---------- */
+    #splash{
+      position:fixed;inset:0;z-index:1000;background:var(--bg);
+      display:flex;align-items:center;justify-content:center;overflow:hidden;
+      transition:opacity .7s cubic-bezier(.4,0,.2,1), transform .8s cubic-bezier(.4,0,.2,1);
+    }
+    #splash.hide{opacity:0;transform:translateY(-14px);pointer-events:none;}
 
-        /* Utility classes for text colors */
-        .text-primary-dark { color: var(--primary-dark); }
-        .text-secondary-dark { color: var(--secondary-dark); }
-        .text-accent-color { color: var(--accent-color); }
-        .text-highlight-color { color: var(--highlight-color); }
-        .text-text-color { color: var(--text-color); }
-        .text-heading-color { color: var(--heading-color); }
+    .splash-grid{
+      position:absolute;inset:-50%;z-index:0;opacity:.22;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size:56px 56px;
+      animation:gridPan 22s linear infinite;
+      mask-image:radial-gradient(circle at 50% 50%, #000 5%, transparent 60%);
+      -webkit-mask-image:radial-gradient(circle at 50% 50%, #000 5%, transparent 60%);
+    }
+    @keyframes gridPan{to{transform:translate(56px,56px);}}
 
-        /* Utility classes for background colors */
-        .bg-primary-dark { background-color: var(--primary-dark); }
-        .bg-secondary-dark { background-color: var(--secondary-dark); }
-        .bg-accent-color { background-color: var(--accent-color); }
-        .bg-highlight-color { background-color: var(--highlight-color); }
+    .splash-glow{
+      position:absolute;width:560px;height:560px;border-radius:50%;z-index:0;
+      background:radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      opacity:0;animation:glowIn 1.6s ease .1s forwards;
+    }
+    @keyframes glowIn{to{opacity:.7;}}
 
-        /* Custom Hexagonal Clipper */
-        .hexagonal-clip {
-            -webkit-clip-path: polygon(50% 0%, 90% 25%, 90% 75%, 50% 100%, 10% 75%, 10% 25%);
-            clip-path: polygon(50% 0%, 90% 25%, 90% 75%, 50% 100%, 10% 75%, 10% 25%);
-            box-shadow: 0 0 20px 5px var(--shadow-highlight); /* Highlight shadow */
-            transition: transform 0.3s ease-in-out;
-        }
-        .hexagonal-clip:hover {
-            transform: scale(1.03); /* Slight zoom on hover */
-        }
+    .splash-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;}
 
-        /* General card styling */
-        .card {
-            background-color: var(--secondary-dark);
-            border-radius: 12px;
-            box-shadow: 0 5px 15px var(--shadow-color);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px var(--shadow-color), 0 0 15px var(--highlight-color);
-        }
+    /* monogram: a single circle that draws itself, then settles */
+    .splash-mark{position:relative;width:112px;height:112px;margin-bottom:34px;}
+    .splash-mark svg{width:100%;height:100%;transform:rotate(-90deg);}
+    .splash-mark circle{
+      fill:none;stroke:var(--text);stroke-width:1;
+      stroke-dasharray:314;stroke-dashoffset:314;
+      animation:drawRing 1.4s cubic-bezier(.65,0,.35,1) .15s forwards;
+    }
+    .splash-mark .mark-fill{
+      fill:none;stroke:var(--brass);stroke-width:1.4;
+      stroke-dasharray:314;stroke-dashoffset:314;
+      opacity:.9;
+      animation:drawRing 1.9s cubic-bezier(.65,0,.35,1) .4s forwards;
+    }
+    @keyframes drawRing{to{stroke-dashoffset:0;}}
+    .splash-mark-letter{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      font-family:var(--font-display);font-size:2.1rem;font-weight:500;color:var(--text);
+      opacity:0;transform:scale(.8);
+      animation:markLetterIn .7s cubic-bezier(.16,.9,.2,1) .95s forwards;
+    }
+    @keyframes markLetterIn{to{opacity:1;transform:scale(1);}}
 
-        /* Input field styling */
-        .custom-input {
-            background-color: var(--secondary-dark);
-            border-radius: 8px;
-            padding: 1rem;
-            color: var(--text-color);
-            outline: none;
-            border: none;
-            transition: border-color 0.3s ease-in-out;
-        }
-        .custom-input:focus {
-            border: 2px solid var(--highlight-color);
-        }
-        .custom-input::placeholder {
-            color: var(--text-color);
-            opacity: 0.7;
-        }
+    .splash-tag{
+      font-size:0.78rem;letter-spacing:.32em;color:var(--text-muted);margin-bottom:16px;
+      opacity:0;transform:translateY(8px);animation:fadeUp .7s ease 1.05s forwards;
+      text-transform:uppercase;
+    }
+    .splash-title{
+      font-family:var(--font-display);font-weight:500;color:var(--text);
+      font-size:clamp(1.9rem,6vw,3.4rem);display:flex;gap:0.02em;overflow:visible;
+      position:relative;
+    }
+    .splash-title span{
+      display:inline-block;opacity:0;transform:translateY(46%);filter:blur(3px);
+      animation:letterUp .78s cubic-bezier(.16,.9,.2,1) forwards;
+    }
+    .splash-title em{font-style:italic;color:var(--text-muted);}
 
-        /* Custom scrollbar for better aesthetics */
-        ::-webkit-scrollbar {
-            width: 10px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--primary-dark);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-color);
-            border-radius: 5px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--highlight-color);
-        }
-    </style>
-</head>
-<body class="overflow-x-hidden">
+    .splash-rule{
+      width:0;height:1px;background:var(--line);margin-top:28px;
+      animation:ruleGrow .9s cubic-bezier(.4,0,.2,1) 1.9s forwards;
+    }
+    @keyframes ruleGrow{to{width:220px;}}
 
-    <!-- Navigation Bar -->
-    <nav class="bg-secondary-dark p-6 shadow-lg flex justify-between items-center fixed w-full z-50 top-0">
-        <div class="text-3xl font-extrabold text-highlight-color">Vikraj A</div>
-        <div class="hidden md:flex space-x-8">
-            <a href="#hero" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">Home</a>
-            <a href="#about" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">About</a>
-            <a href="#services" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">My Services</a>
-            <a href="#projects" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">Portfolio</a>
-            <a href="#contact" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold text-lg">Contact</a>
-        </div>
-        <div class="md:hidden">
-            <button id="mobile-menu-button" class="text-highlight-color text-3xl focus:outline-none">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
+    .splash-percent{
+      margin-top:20px;font-family:var(--font-body);font-variant-numeric:tabular-nums;
+      font-size:0.82rem;letter-spacing:.14em;color:var(--text-muted);
+      opacity:0;animation:fadeUp .6s ease .5s forwards;
+      display:flex;align-items:center;gap:10px;
+    }
+    .splash-percent b{color:var(--text);font-weight:500;}
+    .splash-bar{
+      width:180px;height:1px;background:var(--line);position:relative;overflow:hidden;
+      opacity:0;animation:fadeUp .6s ease .6s forwards;
+    }
+    .splash-bar-fill{
+      position:absolute;left:0;top:0;height:100%;width:0%;
+      background:var(--text);
+      transition:width .15s linear;
+    }
+    @keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
+    @keyframes letterUp{to{opacity:1;transform:translateY(0);filter:blur(0);}}
+    body.no-scroll{overflow:hidden;height:100vh;}
+    #site-particles{
+      position:fixed;inset:0;width:100%;height:100%;z-index:-2;display:block;
+    }
+    body{
+      background:transparent;
+      color:var(--text);
+      font-family:var(--font-body);
+      font-weight:400;
+      line-height:1.6;
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none;}
+    img{max-width:100%;display:block;}
+    .wrap{max-width:1180px;margin:0 auto;padding:0 32px;}
+    ::selection{background:var(--brass);color:var(--bg);}
+
+    /* ---------- nav ---------- */
+    header{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      background:color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);
+    }
+    nav{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:20px 32px;max-width:1180px;margin:0 auto;
+    }
+    .brand{
+      font-family:var(--font-display);
+      font-size:1.25rem;font-weight:600;letter-spacing:0.02em;
+      color:var(--text);
+    }
+    .brand em{font-style:italic;color:var(--brass);}
+    .navlinks{display:flex;gap:38px;font-size:0.92rem;color:var(--text-muted);}
+    .navlinks a{position:relative;padding:4px 0;transition:color .25s;}
+    .navlinks a:hover{color:var(--brass-light);}
+    .navlinks a::after{
+      content:'';position:absolute;left:0;bottom:0;width:0;height:1px;
+      background:var(--brass);transition:width .3s;
+    }
+    .navlinks a:hover::after{width:100%;}
+    .navcta{
+      border:1px solid var(--brass);color:var(--brass-light);
+      padding:9px 20px;border-radius:2px;font-size:0.85rem;letter-spacing:.02em;
+      transition:background .25s,color .25s;
+    }
+    .navcta:hover{background:var(--brass);color:var(--bg);}
+    .menu-btn{display:none;background:none;border:none;color:var(--text);font-size:1.4rem;cursor:pointer;}
+
+    /* ---------- hero ---------- */
+    .hero{
+      position:relative;min-height:100vh;display:flex;align-items:center;
+      padding-top:90px;overflow:hidden;
+      background:radial-gradient(60% 50% at 78% 45%, var(--accent-glow), transparent 70%);
+    }
+    .hero-inner{
+      position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 32px;width:100%;
+      display:grid;grid-template-columns:1.15fr 0.85fr;gap:40px;align-items:center;
+    }
+    .hero-photo-col{position:relative;display:flex;align-items:center;justify-content:center;height:580px;}
+    #hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;}
+    .photo-frame-wrap{position:relative;z-index:2;opacity:0;}
+.photo-frame-wrap.ready{opacity:1;}
+    @keyframes frameIn{to{opacity:1;transform:translateY(0) scale(1);}}
+    .hero-text > *{opacity:0;transform:translateY(22px);}
+    .hero-text.ready > *{animation:heroUp .85s cubic-bezier(.16,.85,.2,1) forwards;}
+    .hero-text.ready > *:nth-child(1){animation-delay:.05s}
+    .hero-text.ready > *:nth-child(2){animation-delay:.16s}
+    .hero-text.ready > *:nth-child(3){animation-delay:.30s}
+    .hero-text.ready > *:nth-child(4){animation-delay:.44s}
+    .hero-text.ready > *:nth-child(5){animation-delay:.56s}
+    .hero-text.ready > *:nth-child(6){animation-delay:.66s}
+    .hero-text.ready > *:nth-child(7){animation-delay:.76s}
+    @keyframes heroUp{to{opacity:1;transform:translateY(0);}}
+    /* ---------- scroll reveal (used across every section) ---------- */
+    .reveal{opacity:0;transform:translateY(30px);transition:opacity .85s cubic-bezier(.16,.8,.24,1), transform .85s cubic-bezier(.16,.8,.24,1);}
+    .reveal.in-view{opacity:1;transform:translateY(0);}
+    .photo-frame{
+      position:relative;width:372px;height:540px;border-radius:4px;
+      overflow:hidden;border:1px solid var(--line);
+      background:linear-gradient(160deg, var(--surface-2), var(--surface));
+      box-shadow:0 40px 90px var(--shadow), 0 0 0 1px var(--line);
+    }
+    .photo-frame img{width:100%;height:100%;object-fit:cover;display:block;
+      filter:saturate(0.85) contrast(1.03);
+    }
+    .photo-vignette{
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(to top, var(--bg) 0%, transparent 20%, transparent 82%, color-mix(in srgb, var(--bg) 40%, transparent) 100%),
+                linear-gradient(to right, color-mix(in srgb, var(--bg) 25%, transparent) 0%, transparent 14%, transparent 86%, color-mix(in srgb, var(--bg) 25%, transparent) 100%);
+    }
+    .frame-corner{position:absolute;width:22px;height:22px;z-index:3;pointer-events:none;opacity:.9;}
+    .frame-corner.tl{top:-8px;left:-8px;border-top:1.5px solid var(--text);border-left:1.5px solid var(--text);}
+    .frame-corner.tr{top:-8px;right:-8px;border-top:1.5px solid var(--text);border-right:1.5px solid var(--text);}
+    .frame-corner.bl{bottom:-8px;left:-8px;border-bottom:1.5px solid var(--text);border-left:1.5px solid var(--text);}
+    .frame-corner.br{bottom:-8px;right:-8px;border-bottom:1.5px solid var(--text);border-right:1.5px solid var(--text);}
+    .photo-caption{
+      position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);z-index:4;
+      background:color-mix(in srgb, var(--bg) 70%, transparent);
+      backdrop-filter:blur(8px);border:1px solid var(--line);
+      padding:9px 20px;border-radius:30px;font-size:0.78rem;letter-spacing:.06em;
+      color:var(--text-muted);white-space:nowrap;
+    }
+    .photo-caption b{color:var(--text);font-weight:600;}
+
+        .hero-wave-greet{
+      position:absolute;top:22px;right:-14px;z-index:5;
+      display:flex;align-items:center;gap:8px;
+      background:var(--surface);border:1px solid var(--line);
+      padding:10px 18px 10px 14px;border-radius:30px;
+      box-shadow:0 14px 34px var(--shadow);
+      opacity:0;transform:scale(.6) translateY(10px);
+      pointer-events:none;
+    }
+    .hero-wave-greet.show{
+      animation:waveGreetIn .55s cubic-bezier(.16,1.2,.3,1) forwards;
+    }
+    @keyframes waveGreetIn{
+      0%{opacity:0;transform:scale(.5) translateY(14px);}
+      70%{opacity:1;transform:scale(1.06) translateY(-2px);}
+      100%{opacity:1;transform:scale(1) translateY(0);}
+    }
+    @keyframes waveGreetOut{
+      to{opacity:0;transform:scale(.85) translateY(-8px);}
+    }
+    .hero-wave-greet span.txt{font-size:0.84rem;color:var(--text);white-space:nowrap;font-family:var(--font-body);font-weight:500;}
+    .hero-wave-greet span.emoji{
+      font-size:1.35rem;display:inline-block;transform-origin:70% 70%;
+    }
+    .hero-wave-greet.show span.emoji{
+      animation:handWave 0.7s ease-in-out .6s 3;
+    }
+    @keyframes handWave{
+      0%{transform:rotate(0deg);}
+      15%{transform:rotate(16deg);}
+      30%{transform:rotate(-10deg);}
+      45%{transform:rotate(16deg);}
+      60%{transform:rotate(-6deg);}
+      75%{transform:rotate(10deg);}
+      100%{transform:rotate(0deg);}
+    }
+    @media (max-width:900px){
+      .hero-wave-greet{top:-14px;right:6px;padding:8px 14px 8px 12px;}
+      .hero-wave-greet span.txt{font-size:0.78rem;}
+    }
+
+    .hero-pill{
+      display:inline-flex;align-items:center;gap:9px;
+      padding:8px 16px 8px 12px;border-radius:30px;border:1px solid var(--line);
+      font-size:0.8rem;color:var(--text-muted);margin-bottom:26px;
+      background:color-mix(in srgb, var(--surface) 60%, transparent);
+    }
+    .hero-pill .dot{
+      width:7px;height:7px;border-radius:50%;background:#4ADE80;position:relative;flex-shrink:0;
+    }
+    .hero-pill .dot::after{
+      content:'';position:absolute;inset:-4px;border-radius:50%;background:#4ADE80;opacity:.45;
+      animation:pulseDot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulseDot{0%,100%{transform:scale(0.6);opacity:.5;}50%{transform:scale(1.3);opacity:0;}}
+    .hero-eyebrow{
+      color:var(--brass);font-size:0.95rem;letter-spacing:.04em;margin-bottom:22px;
+      display:flex;align-items:center;gap:12px;
+    }
+    .hero-eyebrow .rule{width:34px;height:1px;background:var(--brass);}
+    .hero h1 .accent{
+      font-style:italic;font-weight:400;
+      background:linear-gradient(100deg, var(--brass-light), color-mix(in srgb, var(--brass-light) 55%, var(--text-muted)));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .hero p.lede{
+      margin-top:28px;max-width:46ch;color:var(--text-muted);font-size:1.08rem;
+    }
+    .hero-actions{display:flex;gap:18px;margin-top:44px;flex-wrap:wrap;align-items:center;}
+    .btn-primary{
+      background:var(--brass);color:var(--bg);padding:15px 30px;
+      font-size:0.92rem;letter-spacing:.02em;border-radius:2px;
+      transition:transform .25s, box-shadow .25s;font-weight:500;
+      display:inline-flex;align-items:center;gap:9px;
+    }
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px var(--shadow);}
+    .btn-primary svg{width:15px;height:15px;transition:transform .25s;}
+    .btn-primary:hover svg{transform:translateX(3px);}
+    .btn-ghost{
+      border:1px solid var(--line);color:var(--text);padding:15px 30px;
+      font-size:0.92rem;border-radius:2px;transition:border-color .25s;
+    }
+    .btn-ghost:hover{border-color:var(--brass);}
+    .hero-trust{
+      margin-top:34px;font-size:0.85rem;color:var(--text-muted);
+      display:flex;align-items:center;gap:8px;
+    }
+    .hero-trust b{color:var(--text);font-weight:500;}
+    .hero-trust .sep{width:4px;height:4px;border-radius:50%;background:var(--line);}
+    .hero h1{
+      font-family:var(--font-display);
+      font-weight:500;
+      font-size:clamp(2.6rem,6vw,4.6rem);
+      line-height:1.05;
+      max-width:11ch;
+      color:var(--text);
+    }
+    .hero-stats{
+      display:flex;gap:52px;margin-top:76px;flex-wrap:wrap;
+    }
+    .stat b{
+      display:block;font-family:var(--font-display);font-size:2.1rem;color:var(--brass-light);font-weight:500;
+    }
+    .stat span{color:var(--text-muted);font-size:0.85rem;letter-spacing:.02em;}
+
+    /* ---------- section shell ---------- */
+    section{padding:130px 0;position:relative;}
+    .section-head{max-width:640px;margin-bottom:64px;}
+    .section-tag{color:var(--brass);font-size:0.9rem;margin-bottom:14px;display:flex;align-items:center;gap:12px;}
+    .section-tag .rule{width:34px;height:1px;background:var(--brass);}
+    .section-head h2{
+      font-family:var(--font-display);font-weight:500;
+      font-size:clamp(1.9rem,3.6vw,2.7rem);
+      line-height:1.15;
+    }
+    .section-head p{margin-top:18px;color:var(--text-muted);max-width:56ch;}
+
+    /* ---------- about ---------- */
+    .about-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:70px;align-items:start;}
+    .about-text p{color:var(--text-muted);margin-bottom:20px;max-width:58ch;font-size:1.02rem;}
+    .about-text strong{color:var(--text);font-weight:500;}
+    .about-card{
+      background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:36px;
+    }
+    .about-card h3{font-family:var(--font-display);font-size:1.15rem;font-weight:500;margin-bottom:22px;color:var(--brass-light);}
+    .about-list{list-style:none;}
+    .about-list li{
+      display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);
+      font-size:0.94rem;color:var(--text-muted);
+    }
+    .about-list li:last-child{border-bottom:none;}
+    .about-list li b{color:var(--text);font-weight:500;}
+
+    /* ---------- skills ---------- */
+    .skills-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+    .skill-card{background:var(--bg);padding:38px 36px;}
+    .skill-card .num{font-family:var(--font-display);color:var(--brass);font-size:0.9rem;margin-bottom:18px;}
+    .skill-card h3{font-family:var(--font-display);font-size:1.2rem;font-weight:500;margin-bottom:12px;}
+    .skill-card p{color:var(--text-muted);font-size:0.92rem;margin-bottom:20px;}
+    .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+    .chip{
+      font-size:0.76rem;letter-spacing:.01em;padding:6px 12px;border-radius:20px;
+      border:1px solid var(--line);color:var(--text-muted);background:var(--surface);
+    }
+    .bar-row{margin-bottom:12px;}
+    .bar-row .lbl{display:flex;justify-content:space-between;font-size:0.8rem;color:var(--text-muted);margin-bottom:6px;}
+    .bar-track{height:2px;background:var(--line);width:100%;}
+    .bar-fill{height:2px;background:var(--brass);width:0;transition:width 1.4s cubic-bezier(.4,.7,.2,1);}
+
+    /* ---------- projects ---------- */
+    .proj-tabs{display:flex;gap:8px;margin-bottom:48px;}
+    .proj-tab{
+      padding:11px 22px;font-size:0.88rem;border:1px solid var(--line);color:var(--text-muted);
+      border-radius:2px;cursor:pointer;background:transparent;font-family:var(--font-body);transition:all .25s;
+    }
+    .proj-tab.active{background:var(--brass);color:var(--bg);border-color:var(--brass);}
+    .proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;}
+    .proj-grid.hidden{display:none;}
+    .app-card{
+      background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden;
+      transition:border-color .3s, transform .3s;display:block;cursor:pointer;position:relative;
+    }
+    .app-card:hover{border-color:var(--brass);transform:translateY(-4px);}
+    .card-badge{
+      position:absolute;top:14px;right:14px;z-index:2;
+      font-size:0.68rem;letter-spacing:.05em;padding:5px 10px;border-radius:20px;
+      background:color-mix(in srgb, var(--bg) 65%, transparent);backdrop-filter:blur(6px);
+      border:1px solid var(--line);color:var(--text-muted);
+    }
+    .card-link-hint{
+      position:absolute;bottom:14px;right:18px;font-size:0.72rem;color:var(--text-muted);
+      opacity:0;transform:translateX(-4px);transition:opacity .25s,transform .25s;
+    }
+    .app-card:hover .card-link-hint, .web-card:hover .card-link-hint{opacity:1;transform:translateX(0);}
+    .phone-frame{
+      background:var(--surface-2);padding:26px 26px 0;display:flex;justify-content:center;position:relative;
+    }
+    .phone-mock{
+      width:120px;height:210px;border:3px solid var(--line);border-radius:16px;
+      background:linear-gradient(160deg, var(--brass-dim), transparent 60%);
+      position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;
+    }
+    .phone-mock::before{
+      content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);
+      width:26px;height:3px;background:var(--line);border-radius:2px;z-index:2;
+    }
+    .phone-mock .glyph{font-family:var(--font-display);font-size:1.7rem;color:var(--brass-light);opacity:.85;}
+    .phone-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+    .app-body{padding:22px 24px 26px;}
+    .app-body .tag{font-size:0.74rem;color:var(--brass);letter-spacing:.03em;margin-bottom:8px;}
+    .app-body h4{font-family:var(--font-display);font-size:1.08rem;font-weight:500;margin-bottom:8px;}
+    .app-body p{color:var(--text-muted);font-size:0.88rem;}
+
+    .web-card{
+      background:var(--surface);border:1px solid var(--line);border-radius:3px;overflow:hidden;
+      transition:border-color .3s, transform .3s;display:block;cursor:pointer;position:relative;
+    }
+    .web-card:hover{border-color:var(--brass);transform:translateY(-4px);}
+    .browser-frame{background:var(--surface-2);padding:0;position:relative;}
+    .browser-bar{
+      display:flex;align-items:center;gap:6px;padding:11px 16px;border-bottom:1px solid var(--line);
+    }
+    .browser-bar span{width:7px;height:7px;border-radius:50%;background:var(--line);}
+    .browser-screen{
+      height:150px;background:linear-gradient(150deg, var(--brass-dim), transparent 70%);
+      display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+    }
+    .browser-screen .glyph{font-family:var(--font-display);font-size:2.2rem;color:var(--brass-light);opacity:.85;}
+    .web-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+
+    /* ---------- experience ---------- */
+    .timeline{border-left:1px solid var(--line);padding-left:44px;position:relative;}
+    .tl-item{position:relative;padding-bottom:56px;}
+    .tl-item:last-child{padding-bottom:0;}
+    .tl-item::before{
+      content:'';position:absolute;left:-49px;top:4px;width:9px;height:9px;
+      border-radius:50%;background:var(--brass);box-shadow:0 0 0 4px var(--bg), 0 0 0 5px var(--line);
+    }
+    .tl-year{color:var(--brass);font-size:0.85rem;margin-bottom:8px;letter-spacing:.02em;}
+    .tl-item h3{font-family:var(--font-display);font-size:1.3rem;font-weight:500;margin-bottom:6px;}
+    .tl-item .role{color:var(--text-muted);font-size:0.92rem;margin-bottom:14px;}
+    .tl-item p{color:var(--text-muted);max-width:60ch;font-size:0.95rem;}
+
+    /* ---------- contact ---------- */
+    .contact-wrap{
+      background:var(--surface);border:1px solid var(--line);border-radius:3px;
+      padding:70px 60px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
+    }
+    .contact-wrap h2{font-family:var(--font-display);font-size:clamp(1.9rem,3vw,2.5rem);font-weight:500;line-height:1.2;margin-bottom:20px;}
+    .contact-wrap p{color:var(--text-muted);max-width:44ch;}
+    .contact-links{display:flex;flex-direction:column;gap:26px;}
+    .social-icons{display:flex;flex-wrap:wrap;gap:14px;}
+    .icon-btn{
+      width:54px;height:54px;border-radius:50%;border:1px solid var(--line);
+      display:flex;align-items:center;justify-content:center;color:var(--text);
+      transition:background .25s,color .25s,transform .25s,border-color .25s;
+      background:var(--surface);position:relative;flex-shrink:0;
+    }
+    .icon-btn svg{width:20px;height:20px;}
+    .icon-btn:hover{background:var(--brass);color:var(--bg);border-color:var(--brass);transform:translateY(-3px);}
+    .icon-btn::after{
+      content:attr(data-label);position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);
+      font-size:0.72rem;color:var(--text-muted);white-space:nowrap;opacity:0;transition:opacity .2s;
+      pointer-events:none;
+    }
+    .icon-btn:hover::after{opacity:1;}
+
+    footer{
+      padding:36px 0;border-top:1px solid var(--line);
+      display:flex;justify-content:space-between;color:var(--text-muted);font-size:0.85rem;
+    }
+
+    @media (max-width:900px){
+      .navlinks{display:none;}
+      .menu-btn{display:block;}
+      .hero-inner{grid-template-columns:1fr;text-align:left;}
+      .hero-photo-col{height:400px;order:-1;margin-bottom:30px;}
+      .photo-frame{width:220px;height:320px;}
+      .about-grid{grid-template-columns:1fr;gap:40px;}
+      .skills-grid{grid-template-columns:1fr;}
+      .proj-grid{grid-template-columns:1fr 1fr;}
+      .contact-wrap{grid-template-columns:1fr;padding:44px 28px;}
+      .hero-stats{gap:34px;}
+    }
+    @media (max-width:600px){
+      .proj-grid{grid-template-columns:1fr;}
+      .wrap, .hero-inner{padding:0 20px;}
+      section{padding:88px 0;}
+    }
+  </style>
+  </head>
+  <body class="no-scroll">
+
+  <canvas id="site-particles"></canvas>
+
+  <div id="splash">
+    <div class="splash-grid"></div>
+    <div class="splash-glow"></div>
+    <div class="splash-content">
+      <div class="splash-mark">
+        <svg viewBox="0 0 100 100">
+          <circle class="mark-track" cx="50" cy="50" r="50" pathLength="314"></circle>
+          <circle class="mark-fill" cx="50" cy="50" r="50" pathLength="314"></circle>
+        </svg>
+        <div class="splash-mark-letter">V</div>
+      </div>
+      <div class="splash-tag">Portfolio — 2026</div>
+      <div class="splash-title" id="splashTitle"></div>
+      <div class="splash-rule"></div>
+      <div class="splash-percent"><span class="splash-bar"><span class="splash-bar-fill" id="splashBarFill"></span></span><b id="splashPercent">00%</b></div>
+    </div>
+  </div>
+
+  <header>
+    <nav>
+      <div class="brand">V<em>ikraj</em> A</div>
+      <div class="navlinks">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#work">Work</a>
+        <a href="#experience">Experience</a>
+      </div>
+      <a href="#contact" class="navcta">Get in touch</a>
     </nav>
+  </header>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 bg-primary-dark bg-opacity-95 z-40 hidden flex-col items-center justify-center space-y-8 text-3xl">
-        <button id="close-menu-button" class="absolute top-6 right-6 text-highlight-color text-4xl">
-            <i class="fas fa-times"></i>
-        </button>
-        <a href="#hero" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">Home</a>
-        <a href="#about" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">About</a>
-        <a href="#services" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">My Services</a>
-        <a href="#projects" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">Portfolio</a>
-        <a href="#contact" class="text-text-color hover:text-highlight-color transition-colors duration-300 font-semibold" onclick="closeMobileMenu()">Contact</a>
-    </div>
-
-    <main class="pt-24 px-6 md:px-12 lg:px-16">
-
-        <!-- Hero Section -->
-        <section id="hero" class="min-h-screen flex flex-col md:flex-row items-center justify-center text-center md:text-left gap-16 py-10">
-            <div class="md:w-3/5">
-                <p class="text-highlight-color text-2xl mb-4 font-semibold">Hello, It's Me</p>
-                <h1 class="text-heading-color text-5xl md:text-7xl font-extrabold mb-4 leading-tight">Vikraj A</h1>
-                <h2 class="text-text-color text-3xl md:text-4xl font-bold mb-6"> I'm a <span class="text-highlight-color">Flutter Developer</span></h2>
-                <p class="text-text-color text-lg md:text-xl opacity-80 mb-8 max-w-2xl mx-auto md:mx-0">
-                   Expert in Flutter, Dart, and Firebase — creating modern, responsive, and engaging applications for every platform.
-                </p>
-                <div class="flex justify-center md:justify-start space-x-6 mb-12">
-                   <a href="https://www.instagram.com/itsvicky.dev/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    class="flex items-center justify-center w-14 h-14 rounded-xl bg-accent-color text-highlight-color text-2xl shadow-lg transition-all duration-300 hover:bg-highlight-color hover:text-primary-dark">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="https://github.com/vikraj-dev" target="_blank"
-   class="flex items-center justify-center w-14 h-14 rounded-xl bg-accent-color text-highlight-color text-2xl shadow-lg transition-all duration-300 hover:bg-highlight-color hover:text-primary-dark">
-   <i class="fab fa-github"></i>
-</a>
-
-
-                    <a href="https://www.linkedin.com/in/vikraj-arjun" target="_blank"
-   class="flex items-center justify-center w-14 h-14 rounded-xl bg-accent-color text-highlight-color text-2xl shadow-lg transition-all duration-300 hover:bg-highlight-color hover:text-primary-dark">
-   <i class="fab fa-linkedin-in"></i>
-</a>
-
-                </div>
-                <a href="#contact"
-   class="inline-block px-8 py-4 bg-highlight-color text-primary-dark text-lg font-bold rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-   Hire Me
-</a>
-
-            </div>
-   <div class="w-[420px] h-[480px] overflow-hidden rounded-2xl shadow-2xl">
-  <img 
-    src="./assets/crop.JPG"
-    class="w-full h-full object-cover"
-  >
-</div>
-
-        </section>
-
-<hr class="border-t border-accent-color my-8 opacity-30">
-
-        <!-- About Me Section -->
-        <section id="about" class="py-10">
-  <h2 class="text-highlight-color text-4xl font-bold mb-10 text-center">
-
-    About Me
-  </h2>
-
-  <div class="flex flex-col md:flex-row items-center justify-center gap-28 max-w-6xl mx-auto">
-
-
-    <!-- Image -->
-    <div class="w-80 h-[420px] md:w-[360px] md:h-[460px] overflow-hidden rounded-2xl shadow-2xl border border-gray-700 flex-shrink-0">
-
-
-      <img 
-        src="./assets/crop.JPG"
-        alt="Vikraj A - Flutter Developer"
-        class="w-full h-full object-cover"
-      >
-    </div>
-
-    <!-- Content -->
-    <div class="md:w-3/5 text-center md:text-left">
-
-      <h3 class="text-heading-color text-2xl md:text-3xl font-semibold mb-3">
-
-        Flutter Developer
-      </h3>
-
-      <p class="text-text-color text-base md:text-lg opacity-80 mb-7 leading-loose">
-
-        I’m a Flutter Developer with hands-on experience in building real-time, 
-        scalable mobile and web applications. I specialize in Flutter, Firebase, 
-        and clean architecture — focusing on performance, usability, and maintainable code.
-      </p>
-
-      <p class="text-text-color text-lg opacity-80 mb-8">
-        I’ve worked on production-ready apps including taxi booking systems, 
-        admin dashboards, and driver tracking platforms using Google Maps 
-        and Firebase services.
-      </p>
-
-      <!-- Stats -->
-      <div class="grid grid-cols-3 gap-6 mb-8">
-        <div class="text-center">
-          <h4 class="text-highlight-color text-3xl font-bold">1+</h4>
-          <p class="text-sm opacity-70">Years Experience</p>
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        
+        <div class="hero-eyebrow"><span class="rule"></span>Flutter · PHP · Firebase Developer</div>
+        <h1>Apps and platforms, <span class="accent">built to ship.</span></h1>
+        <p class="lede">I design and ship production Flutter apps and PHP-powered web platforms — from first sketch to launch. Nine apps shipped for clients across Canada and India, plus three web platforms in production.</p>
+        <div class="hero-actions">
+          <a href="#work" class="btn-primary">View the work <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="#contact" class="btn-ghost">Start a project</a>
         </div>
-        <div class="text-center">
-          <h4 class="text-highlight-color text-3xl font-bold">3+</h4>
-          <p class="text-sm opacity-70">Projects Completed</p>
-        </div>
-        <div class="text-center">
-          <h4 class="text-highlight-color text-3xl font-bold">2 </h4>
-          <p class="text-sm opacity-70">Live Apps</p>
+        <div class="hero-trust">Trusted by clients in <b>Canada</b><span class="sep"></span><b>India</b></div>
+        <div class="hero-stats">
+          <div class="stat"><b>9</b><span>Apps shipped</span></div>
+          <div class="stat"><b>3</b><span>Web platforms</span></div>
+          <div class="stat"><b>2</b><span>Countries served</span></div>
+          <div class="stat"><b>100%</b><span>On-time delivery</span></div>
         </div>
       </div>
+      <div class="hero-photo-col">
+        <canvas id="hero-canvas"></canvas>
+        <div class="photo-frame-wrap">
+          <div class="photo-frame">
+            <img src="assets/photo.jpeg" alt="Vikraj.A" style="width:100%;height:100%;object-fit:cover;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;background:linear-gradient(150deg,var(--surface-2),var(--surface));position:absolute;inset:0;">
+              <span style="font-family:var(--font-display);font-size:5.6rem;font-weight:500;color:var(--brass-light);opacity:.9;">VA</span>
+            </div>
+            <div class="photo-vignette"></div>
+          </div>
+          <span class="frame-corner tl"></span>
+          <span class="frame-corner tr"></span>
+          <span class="frame-corner bl"></span>
+          <span class="frame-corner br"></span>
+                    <div class="photo-caption">Flutter · PHP · <b>Firebase</b></div>
+          <div class="hero-wave-greet" id="waveGreet"><span class="emoji">👋</span><span class="txt">Hey, welcome!</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-      <!-- Skills -->
-      <div class="flex flex-wrap gap-3 mb-8 justify-center md:justify-start">
-        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Flutter</span>
-        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Dart</span>
-        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Firebase</span>
-        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Firestore</span>
-        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">Google Maps</span>
-        <span class="px-4 py-2 bg-accent-color rounded-full text-sm">REST APIs</span>
+  <section id="about">
+    <div class="wrap">
+      <div class="about-grid">
+        <div class="about-text">
+          <div class="section-tag"><span class="rule"></span>About</div>
+          <h2 style="font-family:var(--font-display);font-weight:500;font-size:clamp(1.9rem,3.6vw,2.5rem);margin-bottom:26px;line-height:1.2;">A developer who cares about the last 10%.</h2>
+          <p>I'm a <strong>Flutter and PHP developer</strong> who builds complete products — not just screens. Every app I ship goes through the same discipline: clean architecture, considered UI motion, and a finish that feels intentional rather than assembled.</p>
+          <p>I started with <strong>Flutter in 2024</strong>, shipping production mobile apps for clients in Canada and India. In 2026 I added <strong>PHP development</strong> to the mix, so I now build the app and the backend that powers it — end to end, on one team.</p>
+          <p>Whether it's a consumer app, an internal tool, or a full web platform, I care about the details most developers skip: transition easing, loading states, empty states, and the quiet moments that make software feel premium.</p>
+        </div>
+        <div class="about-card">
+          <h3>At a glance</h3>
+          <ul class="about-list">
+            <li><span>Focus</span><b>Flutter · PHP · Firebase</b></li>
+            <li><span>Apps delivered</span><b>9 mobile apps</b></li>
+            <li><span>Where</span><b>5 Canada · 4 India</b></li>
+            <li><span>Web platforms</span><b>3 builds (India)</b></li>
+            <li><span>Based in</span><b>Tamil Nadu, India</b></li>
+            <li><span>Availability</span><b>Open to new projects</b></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills" style="background:var(--surface);">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag"><span class="rule"></span>Capabilities</div>
+        <h2>Everything a product needs, end to end.</h2>
+        <p>From the interface a user taps, to the server that answers it — I build the whole path, and animate the moments in between.</p>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="num">01</div>
+          <h3>Flutter Development</h3>
+          <p>Cross-platform apps with native-feeling performance, custom animation, and clean state management.</p>
+          <div class="bar-row"><div class="lbl"><span>Flutter / Dart</span><span>96%</span></div><div class="bar-track"><div class="bar-fill" data-w="96"></div></div></div>
+          <div class="bar-row"><div class="lbl"><span>State management</span><span>92%</span></div><div class="bar-track"><div class="bar-fill" data-w="92"></div></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="num">02</div>
+          <h3>PHP &amp; Backend</h3>
+          <p>Secure APIs, admin dashboards, and databases that scale quietly in the background.</p>
+          <div class="bar-row"><div class="lbl"><span>PHP / Laravel</span><span>94%</span></div><div class="bar-track"><div class="bar-fill" data-w="94"></div></div></div>
+          <div class="bar-row"><div class="lbl"><span>MySQL / REST APIs</span><span>90%</span></div><div class="bar-track"><div class="bar-fill" data-w="90"></div></div></div>
+        </div>
+        <div class="skill-card">
+          <div class="num">03</div>
+          <h3>Firebase &amp; Cloud</h3>
+          <p>End-to-end Firebase — auth, live data, and push, wired straight into production Flutter apps.</p>
+          <div class="chip-row">
+            <span class="chip">Authentication</span>
+            <span class="chip">Cloud Firestore</span>
+            <span class="chip">Realtime Database</span>
+            <span class="chip">Push Notifications</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <div class="num">04</div>
+          <h3>Payments &amp; Delivery</h3>
+          <p>Payment gateways wired in cleanly, apps shipped to the Play Store, and platforms deployed live.</p>
+          <div class="chip-row">
+            <span class="chip">Razorpay</span>
+            <span class="chip">Stripe</span>
+            <span class="chip">Play Store publishing</span>
+            <span class="chip">Live web deployment</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag"><span class="rule"></span>Selected work</div>
+        <h2>Nine apps. Three platforms. One standard.</h2>
+        <p>Five apps for Canadian clients, four for Indian clients, and three web platforms — tap any card to open it live on the Play Store or its domain.</p>
       </div>
 
-      <!-- Resume Button -->
-      <a 
-        href="./assets/Vikraj_A_Flutter_Developer_CV.pdf"
-        target="_blank"
-        class="inline-block px-8 py-4 bg-highlight-color text-primary-dark text-lg font-bold rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-      >
-        Download Resume
-      </a>
+      <div class="proj-tabs">
+        <button class="proj-tab active" data-target="apps">Mobile apps (9)</button>
+        <button class="proj-tab" data-target="webs">Web platforms (3)</button>
+      </div>
 
+      <div class="proj-grid" id="apps">
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.cango.food.customer" target="_blank" rel="noopener"><div class="card-badge">CANADA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-5.png" alt="CanGo Food" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">01</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>CanGo Food</h4><p>Food delivery app — restaurant browsing, live order tracking, and Stripe checkout.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.cangofood.delivery.partner" target="_blank" rel="noopener"><div class="card-badge">CANADA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-6.png" alt="CanGo Delivery Partner" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">02</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>CanGo Delivery Partner</h4><p>Delivery partner app for CanGo Food — route optimization and order handoff.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.cangofood.kitchen" target="_blank" rel="noopener"><div class="card-badge">CANADA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-7.png" alt="CanGo Kitchen" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">03</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>CanGo Kitchen</h4><p>Restaurant partner app — order management, menu control, and live sales.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.cangoride.app" target="_blank" rel="noopener"><div class="card-badge">CANADA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-3.png" alt="CanGo Ride" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">04</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>CanGo Ride</h4><p>Ride-hailing app for Canadian riders — live tracking, fare estimate, in-app payments.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.cangoride.driver" target="_blank" rel="noopener"><div class="card-badge">CANADA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-4.png" alt="CanGo Driver" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">05</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>CanGo Driver</h4><p>Driver-side app for CanGo Ride — trip requests, navigation, and earnings dashboard.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.pktcalltaxi.app" target="_blank" rel="noopener"><div class="card-badge">INDIA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-1.png" alt="PKT Call Taxi — User" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">06</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>PKT Call Taxi — User</h4><p>Ride-hailing app for passengers — live tracking, fare estimate, and instant booking.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.pktcalltaxi.captain" target="_blank" rel="noopener"><div class="card-badge">INDIA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-2.png" alt="PKT Call Taxi — Driver" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">07</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>PKT Call Taxi — Driver</h4><p>Companion driver app — trip requests, navigation, and real-time earnings.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.tamiltaxi.app" target="_blank" rel="noopener"><div class="card-badge">INDIA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-8.png" alt="Tamil Taxi" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">08</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>Tamil Taxi</h4><p>Regional ride-hailing app for Tamil Nadu — booking, tracking, and local payments.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+        <a class="app-card" href="https://play.google.com/store/apps/details?id=com.ucabs.driver" target="_blank" rel="noopener"><div class="card-badge">INDIA</div><div class="phone-frame"><div class="phone-mock"><img class="phone-shot" src="assets/app/app-9.png" alt="U Cabs — Driver" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">09</span></div></div><div class="app-body"><div class="tag">FLUTTER · IOS/ANDROID · FIREBASE</div><h4>U Cabs — Driver</h4><p>Driver app for U Cabs — trip management, navigation, and payout tracking.</p><span class="card-link-hint">View on Play Store →</span></div></a>
+      </div>
+
+      <div class="proj-grid hidden" id="webs">
+        <a class="web-card" href="https://pktcalltaxi.com" target="_blank" rel="noopener"><div class="card-badge">INDIA</div><div class="browser-frame"><div class="browser-bar"><span></span><span></span><span></span></div><div class="browser-screen"><img class="web-shot" src="assets/web/web-1.png" alt="PKT Call Taxi — Booking Platform" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">W1</span></div></div><div class="app-body"><div class="tag">PHP · WEB PLATFORM</div><h4>PKT Call Taxi — Booking Platform</h4><p>The main ride-booking website for PKT Call Taxi — live fare estimate, booking, and account management.</p><span class="card-link-hint">Visit site →</span></div></a>
+        <a class="web-card" href="https://tamiltaxi.net" target="_blank" rel="noopener"><div class="card-badge">INDIA</div><div class="browser-frame"><div class="browser-bar"><span></span><span></span><span></span></div><div class="browser-screen"><img class="web-shot" src="assets/web/web-3.png" alt="Tamil Taxi — Booking Platform" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">W2</span></div></div><div class="app-body"><div class="tag">PHP · WEB PLATFORM</div><h4>Tamil Taxi — Booking Platform</h4><p>Regional ride-booking website for Tamil Taxi — live tracking, fare estimate, and bookings.</p><span class="card-link-hint">Visit site →</span></div></a>
+        <a class="web-card" href="https://pktcalltaxi.net" target="_blank" rel="noopener"><div class="card-badge">INDIA</div><div class="browser-frame"><div class="browser-bar"><span></span><span></span><span></span></div><div class="browser-screen"><img class="web-shot" src="assets/web/web-2.png" alt="PKT Call Taxi — Partner Portal" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="glyph" style="display:none;">W3</span></div></div><div class="app-body"><div class="tag">PHP · WEB PLATFORM</div><h4>PKT Call Taxi — Partner Portal</h4><p>Driver and dispatch portal for PKT Call Taxi — trip assignment, partner onboarding, and reports.</p><span class="card-link-hint">Visit site →</span></div></a>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-
-
-        <hr class="border-t border-accent-color my-16 opacity-40">
-
-
-        <!-- My Services Section -->
-        <section id="services" class="min-h-screen py-10">
-            <h2 class="text-highlight-color text-4xl font-bold mb-12 text-center">My Services</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                <div class="card p-8 flex flex-col items-center text-center">
-                    <div class="text-highlight-color text-5xl mb-6">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3 class="text-heading-color text-2xl font-bold mb-4">Mobile App Development</h3>
-                    <p class="text-text-color opacity-70">Building high-performance, native-like mobile applications for iOS and Android with Flutter.</p>
-                </div>
-                <div class="card p-8 flex flex-col items-center text-center">
-                    <div class="text-highlight-color text-5xl mb-6">
-                        <i class="fas fa-desktop"></i>
-                    </div>
-                    <h3 class="text-heading-color text-2xl font-bold mb-4">Flutter Web Development</h3>
-                    <p class="text-text-color opacity-70">Creating responsive and interactive web experiences using Flutter for the web.</p>
-                </div>
-                <div class="card p-8 flex flex-col items-center text-center">
-                    <div class="text-highlight-color text-5xl mb-6">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <h3 class="text-heading-color text-2xl font-bold mb-4">UI/UX Design</h3>
-                    <p class="text-text-color opacity-70">Crafting intuitive and engaging user interfaces that provide excellent user experiences.</p>
-                </div>
-                <div class="card p-8 flex flex-col items-center text-center">
-                    <div class="text-highlight-color text-5xl mb-6">
-                        <i class="fas fa-code-branch"></i>
-                    </div>
-                    <h3 class="text-heading-color text-2xl font-bold mb-4">State Management (Flutter)</h3>
-                    <p class="text-text-color opacity-70">Implementing efficient and scalable state management solutions in Flutter applications.</p>
-                </div>
-                <div class="card p-8 flex flex-col items-center text-center">
-                    <div class="text-highlight-color text-5xl mb-6">
-                        <i class="fas fa-share-alt"></i>
-                    </div>
-                    <h3 class="text-heading-color text-2xl font-bold mb-4">API Integration (Flutter)</h3>
-                    <p class="text-text-color opacity-70">Connecting Flutter applications with various backend APIs and services.</p>
-                </div>
-                <div class="card p-8 flex flex-col items-center text-center">
-                    <div class="text-highlight-color text-5xl mb-6">
-                        <i class="fas fa-puzzle-piece"></i>
-                    </div>
-                    <h3 class="text-heading-color text-2xl font-bold mb-4">Cross-Platform Development</h3>
-                    <p class="text-text-color opacity-70">Building applications that run seamlessly across multiple platforms from a single codebase.</p>
-                </div>
-            </div>
-        </section>
-
-        <hr class="border-t border-accent-color my-24">
-
-        <!-- Recent Projects Section -->
-        <section id="projects" class="py-12">
-            <h2 class="text-highlight-color text-4xl font-bold mb-12 text-center">Recent Projects</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-
-                <!-- Project Card 1 -->
-                                    <div class="card overflow-hidden">
-                    <img src="./assets/pktlogo.png" alt="PKT Call Taxi User App"
-                        class="w-full h-48 object-cover rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="text-heading-color text-xl font-bold mb-2">
-                        PKT Call Taxi – User App
-                        </h3>
-                        <p class="text-text-color opacity-70 text-sm mb-4">
-                        A Flutter-based taxi booking app for users with real-time driver matching,
-                        fare calculation, Google Maps integration, and Firebase backend.
-                        </p>
-
-                        <div class="text-highlight-color text-sm mb-4">
-                        Flutter • Firebase • Google Maps • FCM
-                        </div>
-
-                        <a href="https://github.com/vikraj-dev/pktcalltaxi-user"
-                        target="_blank"
-                        class="text-highlight-color font-semibold hover:underline">
-                        View Project <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
-                    </div>
-
-                <!-- Project Card 2 -->
-                <div class="card overflow-hidden">
-                    <img src="./assets/car.jpg" alt="PKT Call Taxi Driver App"
-                        class="w-full h-48 object-cover rounded-t-xl">
-                    <div class="p-6">
-                        <h3 class="text-heading-color text-xl font-bold mb-2">
-                        PKT Call Taxi – Driver App
-                        </h3>
-                        <p class="text-text-color opacity-70 text-sm mb-4">
-                        Driver-side Flutter application for accepting rides, live location tracking,
-                        trip management, and push notifications using Firebase.
-                        </p>
-
-                        <div class="text-highlight-color text-sm mb-4">
-                        Flutter • Firebase • Realtime DB • FCM
-                        </div>
-
-                        <a href="https://github.com/vikraj-dev/pktcalltaxi-driver"
-                        target="_blank"
-                        class="text-highlight-color font-semibold hover:underline">
-                        View Project <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
-                    </div>
-
-                <!-- Project Card 3 -->
-                <div class="card overflow-hidden">
-  <img src="./assets/logo.jpg" alt="PKT Call Taxi Admin Panel"
-       class="w-full h-48 object-cover rounded-t-xl">
-  <div class="p-6">
-    <h3 class="text-heading-color text-xl font-bold mb-2">
-      PKT Call Taxi – Admin Panel
-    </h3>
-    <p class="text-text-color opacity-70 text-sm mb-4">
-      Web-based admin dashboard to manage drivers, users, rides,
-      pricing, and real-time analytics using Firebase.
-    </p>
-
-    <div class="text-highlight-color text-sm mb-4">
-      Flutter Web • Firebase • Firestore • Analytics
+  <section id="experience" style="background:var(--surface);">
+    <div class="wrap">
+      <div class="section-head">
+        <div class="section-tag"><span class="rule"></span>Experience</div>
+        <h2>How the work has grown.</h2>
+      </div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-year">2026 — Present</div>
+          <h3>Flutter &amp; PHP Developer</h3>
+          <div class="role">Remote · GoCanadaSearch, Canada</div>
+          <p>Now working across both sides of the stack — shipping Flutter apps and building the PHP + Firebase platforms behind them, for clients in Canada and India.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2025 — 2026</div>
+          <h3>Flutter Developer</h3>
+          <div class="role">Remote · GoCanadaSearch, Canada</div>
+          <p>One year remote for a Canada-based company, shipping production apps with Firebase — authentication, Firestore, push notifications, and payment gateways like Razorpay and Stripe.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-year">2024 — 2025</div>
+          <h3>Flutter Developer Intern</h3>
+          <div class="role">Velga Creative Powerhouse</div>
+          <p>Where it started — learned Flutter from the ground up and shipped my first production apps for Indian clients.</p>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <a href="https://github.com/vikraj-dev/pktcalltaxi-admin"
-       target="_blank"
-       class="text-highlight-color font-semibold hover:underline">
-       View Project <i class="fas fa-arrow-right ml-1"></i>
-    </a>
-  </div>
-</div>
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-wrap">
+        <div>
+          <h2>Let's build something worth showing off.</h2>
+          <p>Open to freelance projects, long-term contracts, and full product builds — mobile, web, or both.</p>
+        </div>
+        <div class="contact-links">
+          <p style="color:var(--text-muted);font-size:0.85rem;margin:0;">Reach out directly, or find me on social.</p>
+          <div class="social-icons">
+            <a href="mailto:vikrajarjun@gmail.com" class="icon-btn" data-label="Email" aria-label="Email">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+            </a>
+            <a href="tel:+916380177563" class="icon-btn" data-label="Call" aria-label="Phone">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.11 4.18 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </a>
+            <a href="https://wa.me/916380177563" target="_blank" rel="noopener" class="icon-btn" data-label="WhatsApp" aria-label="WhatsApp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.87 9.87 0 0 0 12.04 2m0 1.8a8.1 8.1 0 0 1 5.75 2.38 8.1 8.1 0 0 1 2.38 5.73c0 4.48-3.65 8.12-8.14 8.12a8.1 8.1 0 0 1-4.13-1.13l-.3-.17-3.11.82.83-3.03-.19-.31a8.06 8.06 0 0 1-1.24-4.32c0-4.48 3.65-8.09 8.15-8.09m-4.48 4.16c-.15 0-.4.06-.61.29-.21.24-.8.78-.8 1.9s.82 2.2.93 2.36c.11.14 1.6 2.53 3.94 3.44 1.94.77 2.34.62 2.76.58.42-.04 1.36-.55 1.55-1.09.19-.53.19-.99.13-1.09-.06-.09-.21-.14-.44-.26-.23-.11-1.36-.67-1.57-.75-.21-.08-.36-.11-.51.11-.15.23-.59.75-.72.9-.13.15-.27.17-.5.06-.23-.11-.96-.35-1.83-1.12-.68-.6-1.13-1.35-1.27-1.58-.13-.23-.01-.35.1-.47.11-.11.23-.27.35-.4.11-.14.15-.23.23-.38.08-.15.04-.29-.02-.4-.06-.12-.51-1.24-.7-1.69-.19-.44-.38-.38-.51-.39-.13-.01-.28-.01-.43-.01"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/vikraj-arjun/" target="_blank" rel="noopener" class="icon-btn" data-label="LinkedIn" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8.24H4.5V23H.5V8.24zM8.5 8.24h3.83v2.02h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1V23h-4V15.5c0-1.79-.03-4.1-2.5-4.1-2.5 0-2.88 1.95-2.88 3.97V23h-4V8.24z"/></svg>
+            </a>
+            <a href="https://github.com/vikraj-dev" target="_blank" rel="noopener" class="icon-btn" data-label="GitHub" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.1c-3.2.7-3.87-1.36-3.87-1.36-.53-1.33-1.29-1.68-1.29-1.68-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.8 1.18 1.82 1.18 3.08 0 4.41-2.69 5.38-5.26 5.67.42.36.78 1.07.78 2.15v3.19c0 .3.21.66.79.55C20.71 21.39 24 17.08 24 12c0-6.35-5.15-11.5-12-11.5z"/></svg>
+            </a>
+            <a href="https://www.instagram.com/itsvicky.dev?stkn=cjlmNGhiMG54OHVk" target="_blank" rel="noopener" class="icon-btn" data-label="Instagram" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-                <!-- Project Card 4 -->
-                
-        </section>
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;width:100%;">
+      <span>© 2026 VIKRAJ.A</span>
+      <span>Flutter · PHP · Firebase</span>
+    </div>
+  </footer>
 
-        <hr class="border-t border-accent-color my-24">
+  <script>
+  // ---- splash intro (refined: monogram ring-draw + letter reveal, no glitch) ----
+  (function(){
+    const title = document.getElementById('splashTitle');
+    const percentEl = document.getElementById('splashPercent');
+    const barFill = document.getElementById('splashBarFill');
+    const text = "VIKRAJ.A";
+    title.setAttribute('data-text', text);
+    let delay = 1.15;
+    [...text].forEach((ch)=>{
+      const span = document.createElement('span');
+      span.textContent = ch === ' ' ? '\u00A0\u00A0' : ch;
+      span.style.animationDelay = delay + 's';
+      title.appendChild(span);
+      delay += 0.045;
+    });
 
-        <!-- Contact Me Section -->
-        <section id="contact" class="min-h-screen flex items-center justify-center py-10">
-            <div class="w-full max-w-2xl card p-10">
-                <h2 class="text-highlight-color text-4xl font-bold mb-8 text-center">Contact Me</h2>
-                <form id="contact-form" class="space-y-6">
-                    <div>
-                        <label for="name" class="block text-text-color text-lg font-semibold mb-2">Your Name</label>
-                        <input type="text" id="name" name="name" placeholder="Enter your name" class="custom-input w-full" required>
-                    </div>
-                    <div>
-                        <label for="email" class="block text-text-color text-lg font-semibold mb-2">Your Email</label>
-                        <input type="email" id="email" name="email" placeholder="Enter your email address" class="custom-input w-full" required>
-                    </div>
-                    <div>
-                        <label for="message" class="block text-text-color text-lg font-semibold mb-2">Your Message</label>
-                        <textarea id="message" name="message" rows="6" placeholder="Type your message here" class="custom-input w-full resize-y" required></textarea>
-                    </div>
-                    <div class="text-right">
-                        <button type="submit" class="px-8 py-4 bg-highlight-color text-primary-dark text-lg font-bold rounded-lg shadow-md hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                            Send Message
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </section>
-    </main>
+    const TOTAL_MS = 2600;
 
-    <!-- Footer -->
-    <footer class="bg-secondary-dark text-text-color text-center py-8 mt-24">
-        <p>&copy; 2024 Vikraj A. All rights reserved.</p>
-    </footer>
+    // live percentage counter + progress bar, synced to the same timeline
+    const start = performance.now();
+    function tickPercent(now){
+      const p = Math.min((now-start)/TOTAL_MS, 1);
+      const eased = p<1 ? 1-Math.pow(1-p,2) : 1;
+      const pct = Math.round(eased*100);
+      percentEl.textContent = String(pct).padStart(2,'0') + '%';
+      barFill.style.width = pct + '%';
+      if(p < 1) requestAnimationFrame(tickPercent);
+    }
+    requestAnimationFrame(tickPercent);
 
-    <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+      // ---- hero photo: reveal big from center, then settle into its grid position ----
+  function heroPhotoRevealFromCenter(){
+    const wrap = document.querySelector('.photo-frame-wrap');
+    if(!wrap) return;
 
-        // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const closeMenuButton = document.getElementById('close-menu-button');
+    wrap.classList.add('ready'); // opacity:1
 
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.remove('hidden');
-            mobileMenu.classList.add('flex');
-        });
+    const rect = wrap.getBoundingClientRect();
+    const naturalW = rect.width, naturalH = rect.height;
+    const currentCenterX = rect.left + naturalW/2;
+    const currentCenterY = rect.top + naturalH/2;
+    const viewportCenterX = window.innerWidth/2;
+    const viewportCenterY = window.innerHeight/2;
 
-        closeMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            mobileMenu.classList.remove('flex');
-        });
+    const dx = viewportCenterX - currentCenterX;
+    const dy = viewportCenterY - currentCenterY;
 
-        function closeMobileMenu() {
-            mobileMenu.classList.add('hidden');
-            mobileMenu.classList.remove('flex');
+    const desiredW = Math.min(window.innerWidth*0.66, window.innerHeight*0.72, naturalW*2.1);
+    const scale = Math.max(1.15, desiredW / naturalW);
+
+    wrap.style.zIndex = 500;
+    wrap.style.transition = 'none';
+    wrap.style.transform = `translate(${dx}px, ${dy}px) scale(${scale})`;
+    wrap.style.boxShadow = '0 60px 140px rgba(0,0,0,0.55)';
+
+    void wrap.offsetWidth;
+
+    wrap.style.transition = 'transform 1.15s cubic-bezier(.16,.9,.2,1), box-shadow 1.15s ease';
+    requestAnimationFrame(()=>{
+      wrap.style.transform = 'translate(0,0) scale(1)';
+      wrap.style.boxShadow = '0 0 0 rgba(0,0,0,0)';
+    });
+
+    setTimeout(()=>{
+      wrap.style.zIndex = '';
+      wrap.style.transition = '';
+      wrap.style.boxShadow = '';
+    }, 1250);
+  }
+
+    window.addEventListener('load', ()=>{
+      setTimeout(()=>{
+        const splash = document.getElementById('splash');
+        splash.classList.add('hide');
+        document.body.classList.remove('no-scroll');
+        document.querySelector('.hero-text').classList.add('ready');
+        heroPhotoRevealFromCenter();
+        setTimeout(()=>{ splash.style.display='none'; }, 750);
+        setTimeout(animateStats, 500);
+        setTimeout(()=>{
+          const wave = document.getElementById('waveGreet');
+          if(wave) wave.classList.add('show');
+        }, 1350);
+        setTimeout(()=>{
+          const wave = document.getElementById('waveGreet');
+          if(wave) wave.style.animation = 'waveGreetOut .5s ease forwards';
+        }, 5700);
+      }, TOTAL_MS);
+    });
+  })();
+
+  // ---- hero stat counters ----
+  function animateStats(){
+    document.querySelectorAll('.stat b').forEach(el=>{
+      const raw = el.textContent.trim();
+      const num = parseInt(raw.replace(/\D/g,''),10);
+      const suffix = raw.replace(/[0-9]/g,'');
+      if(isNaN(num)) return;
+      const duration = 900, start = performance.now();
+      function tick(now){
+        const p = Math.min((now-start)/duration, 1);
+        const eased = 1 - Math.pow(1-p, 3);
+        el.textContent = Math.round(eased*num) + suffix;
+        if(p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  // ---- scroll-reveal: every section animates in as the user scrolls ----
+  (function(){
+    const groupSelectors = [
+      '.section-head',
+      '.about-grid > *',
+      '.skills-grid > *',
+      '#apps > *',
+      '#webs > *',
+      '.timeline > *',
+      '.contact-wrap > *'
+    ];
+    const els = [];
+    groupSelectors.forEach(sel=>{
+      document.querySelectorAll(sel).forEach(el=>els.push(el));
+    });
+    els.forEach(el=>{
+      el.classList.add('reveal');
+      const parent = el.parentElement;
+      const siblings = Array.from(parent.children);
+      const idx = siblings.indexOf(el);
+      el.style.transitionDelay = Math.min(idx,5)*100 + 'ms';
+    });
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
         }
+      });
+    },{threshold:0.15, rootMargin:'0px 0px -60px 0px'});
+    els.forEach(el=>io.observe(el));
+  })();
 
-        // Contact Form Submission (placeholder)
-        document.getElementById('contact-form').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
+  // ---- reveal skill bars on view ----
+  const bars = document.querySelectorAll('.bar-fill');
+  const barObs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.style.width = e.target.dataset.w + '%';
+        barObs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.4});
+  bars.forEach(b=>barObs.observe(b));
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message').value;
+  // ---- project tabs ----
+  const tabs = document.querySelectorAll('.proj-tab');
+  tabs.forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      tabs.forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('apps').classList.toggle('hidden', tab.dataset.target !== 'apps');
+      document.getElementById('webs').classList.toggle('hidden', tab.dataset.target !== 'webs');
+    });
+  });
 
-            console.log('Form Submitted!');
-            console.log('Name:', name);
-            console.log('Email:', email);
-            console.log('Message:', message);
+  // ---- hero 3D signature moment: rotating ring halo around the photo ----
+  try{
+    const canvas = document.getElementById('hero-canvas');
+    const renderer = new THREE.WebGLRenderer({canvas, alpha:true, antialias:true});
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth/canvas.clientHeight, 0.1, 100);
+    camera.position.z = 6.2;
 
-            // In a real application, you would send this data to a backend server.
-            alert('Thank you for your message! I will get back to you soon.');
-            this.reset(); // Clear the form
+    function resize(){
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      renderer.setSize(w, h, false);
+      camera.aspect = w/h;
+      camera.updateProjectionMatrix();
+    }
+    window.addEventListener('resize', resize);
+
+    const white = new THREE.Color(0xFFFFFF);
+    const group = new THREE.Group();
+
+    const ringSpecs = [
+      {r:2.15, tube:0.012, tilt:0.15, opacity:0.55},
+      {r:2.5,  tube:0.008, tilt:-0.35, opacity:0.35},
+      {r:2.85, tube:0.006, tilt:0.9,  opacity:0.22}
+    ];
+    const rings = ringSpecs.map(spec=>{
+      const geo = new THREE.TorusGeometry(spec.r, spec.tube, 16, 100);
+      const mat = new THREE.MeshBasicMaterial({color:white, transparent:true, opacity:spec.opacity});
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.rotation.x = spec.tilt;
+      mesh.userData.tilt = spec.tilt;
+      group.add(mesh);
+      return mesh;
+    });
+
+    const nodeGeo = new THREE.SphereGeometry(0.028, 8, 8);
+    const nodeMat = new THREE.MeshBasicMaterial({color:white, transparent:true, opacity:0.8});
+    const nodes = [];
+    for(let i=0;i<14;i++){
+      const node = new THREE.Mesh(nodeGeo, nodeMat);
+      const angle = (i/14)*Math.PI*2;
+      const radius = 2.15 + (i%3)*0.35;
+      node.userData = {angle, radius, speed: 0.0025 + (i%4)*0.0007, tilt: (i%3===0?0.15:(i%3===1?-0.35:0.9))};
+      nodes.push(node);
+      group.add(node);
+    }
+
+    scene.add(group);
+
+    const pGeo = new THREE.BufferGeometry();
+    const count = 160;
+    const positions = new Float32Array(count*3);
+    for(let i=0;i<count;i++){
+      positions[i*3] = (Math.random()-0.5)*12;
+      positions[i*3+1] = (Math.random()-0.5)*12;
+      positions[i*3+2] = (Math.random()-0.5)*8 - 2;
+    }
+    pGeo.setAttribute('position', new THREE.BufferAttribute(positions,3));
+    const pMat = new THREE.PointsMaterial({color:0xFFFFFF, size:0.02, transparent:true, opacity:0.25});
+    const particles = new THREE.Points(pGeo, pMat);
+    scene.add(particles);
+
+    resize();
+
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', (e)=>{
+      mouseX = (e.clientX/window.innerWidth - 0.5);
+      mouseY = (e.clientY/window.innerHeight - 0.5);
+    });
+
+    function animate(){
+      requestAnimationFrame(animate);
+      group.rotation.y += 0.0028;
+      rings.forEach((r,i)=>{ r.rotation.z += 0.0006*(i+1); });
+      nodes.forEach(n=>{
+        n.userData.angle += n.userData.speed;
+        const a = n.userData.angle, rad = n.userData.radius, tilt = n.userData.tilt;
+        const x = Math.cos(a)*rad;
+        const y = Math.sin(a)*rad*Math.cos(tilt);
+        const z = Math.sin(a)*rad*Math.sin(tilt);
+        n.position.set(x,y,z);
+      });
+      particles.rotation.y += 0.0004;
+      camera.position.x += (mouseX*0.9 - camera.position.x)*0.02;
+      camera.position.y += (-mouseY*0.6 - camera.position.y)*0.02;
+      camera.lookAt(scene.position);
+      renderer.render(scene, camera);
+    }
+    animate();
+  }catch(err){ console.warn('3D hero skipped', err); }
+
+  // ---- global site-wide particle network (runs behind every section) ----
+  (function(){
+    const canvas = document.getElementById('site-particles');
+    const ctx = canvas.getContext('2d');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    let W, H, DPR;
+    let particles = [];
+    const mouse = {x:-9999, y:-9999, active:false};
+
+    function bgColor(){
+      return getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#070B14';
+    }
+    function dotColor(){
+      return getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#ffffff';
+    }
+
+    function resize(){
+      DPR = Math.min(window.devicePixelRatio||1, 2);
+      W = window.innerWidth; H = document.documentElement.scrollHeight;
+      H = window.innerHeight;
+      canvas.width = W*DPR; canvas.height = H*DPR;
+      canvas.style.width = W+'px'; canvas.style.height = H+'px';
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+      const area = W*H;
+      const count = Math.min(110, Math.max(45, Math.round(area/16000)));
+      particles = [];
+      for(let i=0;i<count;i++){
+        particles.push({
+          x: Math.random()*W,
+          y: Math.random()*H,
+          vx: (Math.random()-0.5)*0.28,
+          vy: (Math.random()-0.5)*0.28,
+          r: Math.random()*1.6+0.6
         });
+      }
+    }
 
-        // Custom alert function to replace window.alert
-        function alert(message) {
-            const alertBox = document.createElement('div');
-            alertBox.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background-color: var(--secondary-dark);
-                color: var(--text-color);
-                padding: 20px 30px;
-                border-radius: 12px;
-                box-shadow: 0 5px 20px var(--shadow-color);
-                z-index: 9999;
-                text-align: center;
-                font-size: 1.1rem;
-                max-width: 90%;
-            `;
-            alertBox.innerHTML = `
-                <p class="mb-4">${message}</p>
-                <button class="px-6 py-2 bg-highlight-color text-primary-dark font-bold rounded-lg hover:opacity-90">OK</button>
-            `;
-            document.body.appendChild(alertBox);
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', (e)=>{ mouse.x=e.clientX; mouse.y=e.clientY; mouse.active=true; });
+    window.addEventListener('mouseleave', ()=>{ mouse.active=false; });
+    window.addEventListener('touchmove', (e)=>{
+      if(e.touches && e.touches[0]){ mouse.x=e.touches[0].clientX; mouse.y=e.touches[0].clientY; mouse.active=true; }
+    }, {passive:true});
 
-            alertBox.querySelector('button').addEventListener('click', () => {
-                document.body.removeChild(alertBox);
-            });
+    resize();
+
+    const maxDist = 130;
+    const mouseDist = 150;
+
+    function frame(){
+      const bg = bgColor();
+      const dot = dotColor();
+      ctx.fillStyle = bg;
+      ctx.fillRect(0,0,W,H);
+
+      for(let i=0;i<particles.length;i++){
+        const p = particles[i];
+        if(!reduceMotion){
+          p.x += p.vx; p.y += p.vy;
+          if(p.x<0||p.x>W) p.vx*=-1;
+          if(p.y<0||p.y>H) p.vy*=-1;
+          if(mouse.active){
+            const dx = p.x-mouse.x, dy = p.y-mouse.y;
+            const d2 = dx*dx+dy*dy;
+            if(d2 < mouseDist*mouseDist){
+              const d = Math.sqrt(d2)||1;
+              const force = (mouseDist-d)/mouseDist*0.06;
+              p.x += (dx/d)*force*10;
+              p.y += (dy/d)*force*10;
+            }
+          }
         }
-    </script>
-</body>
-</html>
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = colorWithAlpha(dot, 0.55);
+        ctx.fill();
+      }
+
+      for(let i=0;i<particles.length;i++){
+        for(let j=i+1;j<particles.length;j++){
+          const a=particles[i], b=particles[j];
+          const dx=a.x-b.x, dy=a.y-b.y;
+          const dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < maxDist){
+            const op = (1 - dist/maxDist) * 0.16;
+            ctx.strokeStyle = colorWithAlpha(dot, op);
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(b.x,b.y);
+            ctx.stroke();
+          }
+        }
+        if(mouse.active){
+          const a = particles[i];
+          const dx=a.x-mouse.x, dy=a.y-mouse.y;
+          const dist = Math.sqrt(dx*dx+dy*dy);
+          if(dist < mouseDist){
+            const op = (1 - dist/mouseDist) * 0.28;
+            ctx.strokeStyle = colorWithAlpha(dot, op);
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x,a.y);
+            ctx.lineTo(mouse.x,mouse.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    function colorWithAlpha(hex, alpha){
+      hex = hex.replace('#','');
+      if(hex.length===3){ hex = hex.split('').map(c=>c+c).join(''); }
+      const r = parseInt(hex.substring(0,2),16);
+      const g = parseInt(hex.substring(2,4),16);
+      const b = parseInt(hex.substring(4,6),16);
+      return `rgba(${r},${g},${b},${alpha})`;
+    }
+
+    requestAnimationFrame(frame);
+  })();
+  </script>
+  </body>
+  </html>
